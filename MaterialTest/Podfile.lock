@@ -1,0 +1,24 @@
+PODS:
+  - Material (2.3.7):
+    - Material/Core (= 2.3.7)
+  - Material/Core (2.3.7)
+
+DEPENDENCIES:
+  - Material (from `https://github.com/CosmicMind/Material.git`, branch `development`)
+
+EXTERNAL SOURCES:
+  Material:
+    :branch: development
+    :git: https://github.com/CosmicMind/Material.git
+
+CHECKOUT OPTIONS:
+  Material:
+    :commit: f92139698cea93ac77279de553b269edbd3642ae
+    :git: https://github.com/CosmicMind/Material.git
+
+SPEC CHECKSUMS:
+  Material: b0aa466c72931f6dc3854a059e086455f4103a28
+
+PODFILE CHECKSUM: 01f45b646d55ecf25945da4b8a7617db36811c10
+
+COCOAPODS: 1.1.1

@@ -1,0 +1,10 @@
+use_frameworks!
+platform :ios, '10.0'
+
+target 'MaterialTest' do
+  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  pod 'Material', :git => 'https://github.com/CosmicMind/Material.git', :branch => 'development'
+
+  # Pods for MaterialTest
+
+end
