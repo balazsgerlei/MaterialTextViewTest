@@ -81,7 +81,7 @@ open class ToolbarController: StatusBarController {
     }
     
     /// Reference to the Toolbar.
-    open private(set) lazy var toolbar: Toolbar = Toolbar()
+    open private(set) var toolbar = Toolbar()
     
     /// Internal reference to the floatingViewController.
 	private var internalFloatingViewController: UIViewController?
@@ -96,31 +96,37 @@ open class ToolbarController: StatusBarController {
 		}
 		set(value) {
 			if let v = internalFloatingViewController {
-				v.view.layer.rasterizationScale = Device.scale
+				v.view.layer.rasterizationScale = Screen.scale
 				v.view.layer.shouldRasterize = true
 				delegate?.toolbarControllerWillCloseFloatingViewController?(toolbarController: self)
 				internalFloatingViewController = nil
 				UIView.animate(withDuration: 0.5,
 					animations: { [weak self] in
-						if let s = self {
-							v.view.center.y = 2 * s.view.bounds.height
-							s.toolbar.alpha = 1
-							s.rootViewController.view.alpha = 1
-						}
+                        guard let s = self else {
+                            return
+                        }
+                        
+                        v.view.center.y = 2 * s.view.bounds.height
+                        s.toolbar.alpha = 1
+                        s.rootViewController.view.alpha = 1
 					}) { [weak self] _ in
-						if let s = self {
-							v.willMove(toParentViewController: nil)
-							v.view.removeFromSuperview()
-							v.removeFromParentViewController()
-							v.view.layer.shouldRasterize = false
-							s.isUserInteractionEnabled = true
-							s.toolbar.isUserInteractionEnabled = true
-							DispatchQueue.main.async { [weak self] in
-								if let s = self {
-									s.delegate?.toolbarControllerDidCloseFloatingViewController?(toolbarController: s)
-								}
-							}
-						}
+                        guard let s = self else {
+                            return
+                        }
+                        
+                        v.willMove(toParentViewController: nil)
+                        v.view.removeFromSuperview()
+                        v.removeFromParentViewController()
+                        v.view.layer.shouldRasterize = false
+                        s.isUserInteractionEnabled = true
+                        s.toolbar.isUserInteractionEnabled = true
+                        DispatchQueue.main.async { [weak self] in
+                            guard let s = self else {
+                                return
+                            }
+                            
+                            s.delegate?.toolbarControllerDidCloseFloatingViewController?(toolbarController: s)
+                        }
 					}
 			}
 			
@@ -134,9 +140,9 @@ open class ToolbarController: StatusBarController {
 				v.view.layer.zPosition = 1500
 				v.didMove(toParentViewController: self)
 				v.view.isHidden = false
-				v.view.layer.rasterizationScale = Device.scale
+				v.view.layer.rasterizationScale = Screen.scale
 				v.view.layer.shouldRasterize = true
-				view.layer.rasterizationScale = Device.scale
+				view.layer.rasterizationScale = Screen.scale
 				view.layer.shouldRasterize = true
 				internalFloatingViewController = v
 				isUserInteractionEnabled = false
@@ -159,9 +165,11 @@ open class ToolbarController: StatusBarController {
                         v.view.layer.shouldRasterize = false
                         s.view.layer.shouldRasterize = false
                         DispatchQueue.main.async { [weak self] in
-                            if let s = self {
-                                s.delegate?.toolbarControllerDidOpenFloatingViewController?(toolbarController: s)
+                            guard let s = self else {
+                                return
                             }
+                            
+                            s.delegate?.toolbarControllerDidOpenFloatingViewController?(toolbarController: s)
                         }
 					}
 			}
@@ -171,9 +179,8 @@ open class ToolbarController: StatusBarController {
 	
 	open override func layoutSubviews() {
 		super.layoutSubviews()
-        statusBar.layoutIfNeeded()
         
-        let y = 0 == statusBar.zPosition || statusBar.isHidden ? 0 : statusBar.height
+        let y = Application.shouldStatusBarBeHidden || statusBar.isHidden ? 0 : statusBar.height
         let p = y + toolbar.height
         
         toolbar.y = y
@@ -197,12 +204,20 @@ open class ToolbarController: StatusBarController {
      */
 	open override func prepare() {
 		super.prepare()
-		prepareToolbar()
+        prepareStatusBar()
+        prepareToolbar()
 	}
-	
-	/// Prepares the toolbar.
-	private func prepareToolbar() {
+}
+
+extension ToolbarController {
+    /// Prepares the statusBar.
+    fileprivate func prepareStatusBar() {
+        shouldHideStatusBarOnRotation = false
+    }
+
+    /// Prepares the toolbar.
+    fileprivate func prepareToolbar() {
         toolbar.depthPreset = .depth1
         view.addSubview(toolbar)
-	}
+    }
 }

@@ -30,16 +30,24 @@
 
 import UIKit
 
-internal struct Pulse {
-    /// An Array of layers.
-    internal lazy var layers = [CAShapeLayer]()
+public struct Screen {
+    /// Retrieves the device bounds.
+    public static var bounds: CGRect {
+        return UIScreen.main.bounds
+    }
     
-    /// A UIColor.
-    internal var color = Color.grey.base
+    /// Retrieves the device width.
+    public static var width: CGFloat {
+        return bounds.width
+    }
     
-    /// A reference to the PulseAnimation.
-    internal var animation = PulseAnimation.pointWithBacking
+    /// Retrieves the device height.
+    public static var height: CGFloat {
+        return bounds.height
+    }
     
-    /// The opcaity value for the pulse animation.
-    internal var opacity: CGFloat = 0.18
+    /// Retrieves the device scale.
+    public static var scale: CGFloat {
+        return UIScreen.main.scale
+    }
 }

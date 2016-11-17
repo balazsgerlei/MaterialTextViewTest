@@ -52,7 +52,7 @@ public struct GridAxis {
      - Parameter rows: The number of rows, vertical axis the grid will use.
      - Parameter columns: The number of columns, horizontal axis the grid will use.
      */
-    public init(rows: Int = 12, columns: Int = 12) {
+    internal init(rows: Int = 12, columns: Int = 12) {
         self.rows = rows
         self.columns = columns
     }
@@ -70,13 +70,13 @@ public struct GridOffset {
      - Parameter rows: The number of rows, vertical axis the grid will use.
      - Parameter columns: The number of columns, horizontal axis the grid will use.
      */
-    public init(rows: Int = 0, columns: Int = 0) {
+    internal init(rows: Int = 0, columns: Int = 0) {
         self.rows = rows
         self.columns = columns
     }
 }
 
-public class Grid {
+public struct Grid {
     /// Defer the calculation.
     public var deferred = false
     
@@ -169,7 +169,7 @@ public class Grid {
      - Parameter columns: The number of columns, horizontal axis the grid will use.
      - Parameter interimSpace: The interim space between rows or columns.
      */
-    public init(context: UIView?, rows: Int = 0, columns: Int = 0, interimSpace: InterimSpace = 0) {
+    internal init(context: UIView?, rows: Int = 0, columns: Int = 0, interimSpace: InterimSpace = 0) {
         self.context = context
         self.rows = rows
         self.columns = columns
@@ -177,12 +177,12 @@ public class Grid {
     }
     
     /// Begins a deferred block.
-    public func begin() {
+    public mutating func begin() {
         deferred = true
     }
     
     /// Completes a deferred block.
-    public func commit() {
+    public mutating func commit() {
         deferred = false
         reload()
     }
@@ -269,7 +269,7 @@ private var GridKey: UInt8 = 0
 /// Grid extension for UIView.
 extension UIView {
     /// Grid reference.
-    public fileprivate(set) var grid: Grid {
+    public var grid: Grid {
         get {
             return AssociatedObject(base: self, key: &GridKey) {
                 return Grid(context: self)

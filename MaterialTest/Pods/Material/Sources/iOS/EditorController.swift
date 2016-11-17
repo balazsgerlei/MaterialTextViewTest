@@ -29,17 +29,55 @@
  */
 
 import UIKit
+import AVFoundation
 
-extension UIWindow {
+extension UIViewController {
     /**
-     Captures a screenshot of the contents in the apps keyWindow.
-     - Returns: An optional UIImage.
+     A convenience property that provides access to the EditorController.
+     This is the recommended method of accessing the EditorController
+     through child UIViewControllers.
      */
-    open func capture() -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(frame.size, isOpaque, Screen.scale)
-        layer.render(in: UIGraphicsGetCurrentContext()!)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return image
+    public var editorController: EditorController? {
+        var viewController: UIViewController? = self
+        while nil != viewController {
+            if viewController is EditorController {
+                return viewController as? EditorController
+            }
+            viewController = viewController?.parent
+        }
+        return nil
     }
 }
+
+open class EditorController: ToolbarController {
+    /// A reference to the Editor instance.
+    @IBInspectable
+    open private(set) var editor = Editor()
+    
+    /**
+     Prepares the view instance when intialized. When subclassing,
+     it is recommended to override the prepare method
+     to initialize property values and other setup operations.
+     The super.prepare method should always be called immediately
+     when subclassing.
+     */
+    open override func prepare() {
+        super.prepare()
+        view.backgroundColor = .white
+        
+        prepareToolbar()
+        prepareEditor()
+    }
+    
+    /// Prepares the toolbar.
+    private func prepareToolbar() {
+        toolbar.depthPreset = .none
+    }
+    
+    /// Prepares editor.
+    private func prepareEditor() {
+        editor.delegate = self
+    }
+}
+
+extension EditorController: EditorDelegate {}

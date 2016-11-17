@@ -38,7 +38,7 @@ open class Layer: CAShapeLayer {
      allows the dropshadow effect on the backing layer, while clipping
      the image to a desired shape within the visualLayer.
      */
-	open private(set) lazy var visualLayer = CAShapeLayer()
+	open internal(set) var visualLayer = CAShapeLayer()
 	
 	/**
      A property that manages an image for the visualLayer's contents
@@ -77,7 +77,7 @@ open class Layer: CAShapeLayer {
 	/**
      A floating point value that defines a ratio between the pixel
      dimensions of the visualLayer's contents property and the size
-     of the layer. By default, this value is set to the Device.scale.
+     of the layer. By default, this value is set to the Screen.scale.
      */
 	@IBInspectable
     open override var contentsScale: CGFloat {
