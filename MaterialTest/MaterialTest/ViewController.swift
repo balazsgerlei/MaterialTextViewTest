@@ -28,8 +28,8 @@ class ViewController: UIViewController {
         textFieldSomething.detail = "Error!"
         textFieldSomething.detailColor = UIColor.red
         
-        textFieldSomething.detail = "Error!"
-        textFieldSomething.detailColor = UIColor.red
+        textFieldSomethingElse.detail = "Error!"
+        textFieldSomethingElse.detailColor = UIColor.red
     }
 
 }
